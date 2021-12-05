@@ -4,17 +4,34 @@
     Register new User
     <input id="inputUser" type="text" placeholder="UserName" />
     <button id="buttonOk">GO!</button>
-
+    <p>List of users</p>
+    <ul id="userList"></ul>
     <script>
+      const list = document.getElementById("userList");
+      fetch("http://localhost:8000/users")
+        .then((res) => res.json())
+        .then(({ users }) => {
+          console.log(users, "!!!!!");
+          users.forEach((user) => {
+            const listItem = document.createElement("li");
+            listItem.innerText = user;
+            list.appendChild(listItem);
+          });
+        });
+
       document.getElementById("buttonOk").addEventListener("click", () => {
         const name = document.getElementById("inputUser").value;
         console.log(name);
         fetch("http://localhost:8000/users", {
           method: "POST",
           body: JSON.stringify({ name }),
-        })
-          .then((res) => res.json())
-          .then(console.log);
+        }).then((res) => {
+          if (res.status === 201) {
+            const listItem = document.createElement("li");
+            listItem.innerText = name;
+            list.appendChild(listItem);
+          }
+        });
       });
     </script>
   </body>
